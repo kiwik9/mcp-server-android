@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
-    "postbuild": "mkdir -p build/prompts/doc && cp src/prompts/unit_test/doc/generate-unit-test.md build/prompts/doc/generate-unit-test.md"
+    "postbuild": "mkdir -p build/doc && cp -r src/doc/* build/doc/"
   },
   "keywords": [],
   "author": "",

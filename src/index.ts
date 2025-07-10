@@ -1,57 +1,104 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import PROMPTS_REQ from "./prompts/unit_test/request/prompts_req.js";
-import PROMPTS_RES from "./prompts/unit_test/response/prompt_unit_test_res.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-import {
-    ListPromptsRequestSchema,
-    GetPromptRequestSchema
-} from "@modelcontextprotocol/sdk/types.js";
+import { readFileSync } from "fs";
+import { z } from "zod";
 import prompUnitTest from "./prompts/unit_test/generate_kotlin_unit_test.js";
-import { ca } from "zod/v4/locales";
+import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
+import getDocumentationFile from "./util/filesUtils.js";
 
-
-const server = new Server({
-    name: "promp-server-android",
+const server = new McpServer({
+    name: "android-mcp",
     version: "1.0.0"
-}, {
-    capabilities: {
-        prompts: PROMPTS_REQ
-    }
 });
 
-server.setRequestHandler(ListPromptsRequestSchema, async () => {
-    return {
-        prompts: Object.values(PROMPTS_REQ)
-    };
-});
-
-
-server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-    const promptList = Object.entries(PROMPTS_RES).map(([name, value]) => ({ name, ...value }));
-    const name = request.params.name
-    const prompt = promptList.find(p => p.name === name);
-
-    if (!prompt) {
-        throw new Error(`Prompt not found: ${request.params.name}`);
-    }
-
-    if (request.params.name === "generate-unit-test") {
-        let filePath = request.params.arguments?.["file-directory"] || "";
-        return {
-            messages: [
-                {
-                    role: "user",
-                    content: {
-                        type: "text",
-                        text: prompUnitTest(filePath)
-                    }
+server.registerPrompt(
+    "unit-test",
+    {
+        title: "Generador de pruebas unitarias en Kotlin",
+        description: "Genera un archivo de prueba unitaria en Kotlin a partir de un archivo fuente.",
+        argsSchema: {
+            urlPath: z.string().describe("Ruta del archivo fuente para generar la prueba unitaria"),
+        }
+    },
+    ({ urlPath }) => ({
+        messages: [
+            {
+                role: "user",
+                content: {
+                    type: "text",
+                    text: prompUnitTest(urlPath)
                 }
-            ]
+            }
+        ]
+    })
+);
+
+server.registerResource(
+    "unit-test-guidelines-doc",
+    "doc://generate-unit-test",
+    {
+  title: "Guía para generar pruebas unitarias en Kotlin",
+        description: "Documento de buenas prácticas y requisitos para generar pruebas unitarias en Kotlin.",
+        mimeType: "text/markdown"
+    },
+    async (uri) => {
+        const info = readFileSync(getDocumentationFile("generate-unit-test.md"), "utf-8");
+        return {
+            contents: [{
+                uri: uri.href,
+                text: info
+            }]
         };
     }
-    throw new Error("Prompt implementation not found");
-});
+);
+
+server.registerResource(
+    "commit-message-guidelines-doc",
+    "doc://commit-message-guidelines",
+    {
+        title: "Guía de mensajes de commit",
+        description: "Documento de buenas prácticas y requisitos para mensajes de commit.",
+        mimeType: "text/markdown"
+    },
+    async (uri) => {
+        const info = readFileSync(getDocumentationFile("commit-message-guidelines.md"), "utf-8");
+        return {
+            contents: [{
+                uri: uri.href,
+                text: info
+            }]
+        };
+    }
+);
+
+server.registerTool(
+    "get-document",
+    {
+        title: "Obtiene el documento del mcp",
+        description: "Obtiene un documento del MCP por su URI.",
+        inputSchema: {
+            uri: z.string().describe("URI del documento a obtener, por ejemplo: doc://generate-unit-test")
+        }
+    },
+    async ({ uri }) => {
+        let fileName = null;
+        if (uri.startsWith("doc://")) {
+            const docName = uri.replace("doc://", "");
+            fileName = `${docName}.md`;
+        } else if (uri.startsWith("doc://")) {
+            const docName = uri.replace("doc://", "");
+            fileName = `${docName}.md`;
+        } else {
+            fileName = uri;
+        }
+        const fileContent = readFileSync(getDocumentationFile(fileName), "utf-8");
+        return {
+            content: [{
+                type: "text",
+                text: fileContent
+            }]
+        };
+    }
+);
 
 async function main() {
     const transport = new StdioServerTransport();
