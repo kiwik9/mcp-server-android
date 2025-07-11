@@ -1,39 +1,16 @@
 const PROMPTS = {
-    "git-commit": {
-        name: "git-commit",
-        description: "Generate a Git commit message",
+    "generate-feature-clean-architecture": {
+        name: "generate-feature-clean-architecture",
+        description: "Generar los componentes de un feature siguiendo Clean Architecture en Android",
         arguments: [
             {
-                name: "changes",
-                description: "Git diff or description of changes",
-                required: true
-            }
-        ]
-    },
-    "explain-code": {
-        name: "explain-code",
-        description: "Explain how code works",
-        arguments: [
-            {
-                name: "code",
-                description: "Code to explain",
+                name: "module-directory",
+                description: "Nombre del directorio del módulo feature en Android",
                 required: true
             },
             {
-                name: "language",
-                description: "Programming language",
-                required: false
-            }
-        ]
-    },
-
-    "text-prompt": {
-        name: "test-prompt",
-        description: "return ever lorem",
-        arguments: [
-            {
-                name: "name",
-                description: "return lorem + name",
+                name: "documentation-directory",
+                description: "Nombre del directorio de documentación del proyecto",
                 required: true
             }
         ]

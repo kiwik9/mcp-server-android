@@ -1,12 +1,17 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import PROMPTS from "./prompt/prompts.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { generateRestMethod } from "./prompt/cleanArquitecture/prompt_generate_rest_method.js";
+import { generateModelPrompt } from "./prompt/cleanArquitecture/prompt_generate_model_service.js";
+import { generateRepositoryPrompt } from "./prompt/cleanArquitecture/prompt_generate_repository.js";
+import { generateUseCasePrompt } from "./prompt/cleanArquitecture/prompt_generate_use_case.js";
 
 import {
     ListPromptsRequestSchema,
     GetPromptRequestSchema
 } from "@modelcontextprotocol/sdk/types.js";
 
+const ANDROID_PROJECT_PATH = process.env.ANDROID_PROJECT_PATH;
 
 const server = new Server({
     name: "promp-server-android",
@@ -32,47 +37,50 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
         throw new Error(`Prompt not found: ${request.params.name}`);
     }
 
-    if (request.params.name === "git-commit") {
+    if (request.params.name === "generate-feature-clean-architecture") { 
+        const modulePath = request.params.arguments?.["module-directory"] ?? "Unknown";
+        const documentationPath = request.params.arguments?.["documentation-directory"] ?? "Unknown";
+        let promptRestMethod = generateRestMethod(modulePath, documentationPath);
+        let promptModel = generateModelPrompt(modulePath, documentationPath);
+        let promptRepository = generateRepositoryPrompt(modulePath, documentationPath);
+        let promptUseCase = generateUseCasePrompt(modulePath);
         return {
             messages: [
                 {
-                    role: "user",
+                    role: "android-developer-expert",
                     content: {
                         type: "text",
-                        text: `Generate a concise but descriptive commit message for these changes:\n\n${request.params.arguments?.changes}`
+                        text: promptModel
+                    }
+                },
+                {
+                    role: "android-developer-expert",
+                    content: {
+                        type: "text",
+                        text: promptRestMethod
+                    }
+                },
+                {
+                    role: "android-developer-expert",
+                    content: {
+                        type: "text",
+                        text: promptRepository
+                    }
+                },
+                {
+                    role: "android-developer-expert",
+                    content: {
+                        type: "text",
+                        text: promptUseCase
                     }
                 }
             ]
         };
     }
 
-    if (request.params.name === "explain-code") {
-        const language = request.params.arguments?.language || "Unknown";
-        return {
-            messages: [
-                {
-                    role: "user",
-                    content: {
-                        type: "text",
-                        text: `Explain how this ${language} code works:\n\n${request.params.arguments?.code}`
-                    }
-                }
-            ]
-        };
-    }
-
-    if (request.params.name === "test-prompt") {
-        return {
-            messages: [
-                {
-                    role: "user",
-                    content: {
-                        type: "text",
-                        text: `return lorem + ${request.params.arguments?.name}`
-                    }
-                }
-            ]
-        };
+    if (!ANDROID_PROJECT_PATH) {
+        console.error("ANDROID_PROJECT_PATH environment variable is not set");
+        process.exit(1);
     }
 
     throw new Error("Prompt implementation not found");

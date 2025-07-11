@@ -1,0 +1,12 @@
+{
+	"servers": {
+		"my-mcp-server-8e1c00df": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"C:\\AndroidProjects\\mcp-server-android\\mcp-server-android\\build\\index.js"
+			]
+		}
+	},
+	"inputs": []
+}

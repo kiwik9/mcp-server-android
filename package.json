@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "type": "module",
-  "description": "",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",
     "zod": "^3.25.76"
@@ -19,9 +18,10 @@
     "typescript": "^5.8.3"
   },
   "bin": {
-    "weather": "./build/index.js"
+    "weather": "build/index.js"
   },
   "files": [
     "build"
-  ]
+  ],
+  "description": ""
 }
