@@ -1,10 +1,10 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import PROMPTS from "./prompt/prompts.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { generateRestMethod } from "./prompt/cleanArquitecture/prompt_generate_rest_method.js";
-import { generateModelPrompt } from "./prompt/cleanArquitecture/prompt_generate_model_service.js";
-import { generateRepositoryPrompt } from "./prompt/cleanArquitecture/prompt_generate_repository.js";
-import { generateUseCasePrompt } from "./prompt/cleanArquitecture/prompt_generate_use_case.js";
+import { generateRestMethod } from "./prompt/cleanArchitecture/prompt_generate_rest_method.js";
+import { generateModelPrompt } from "./prompt/cleanArchitecture/prompt_generate_model_service.js";
+import { generateRepositoryPrompt } from "./prompt/cleanArchitecture/prompt_generate_repository.js";
+import { generateUseCasePrompt } from "./prompt/cleanArchitecture/prompt_generate_use_case.js";
 
 import {
     ListPromptsRequestSchema,
