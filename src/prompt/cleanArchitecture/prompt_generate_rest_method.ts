@@ -1,12 +1,12 @@
 export function generateRestMethod(androidModuleApp: string, documentationPath: string): string {
     return `
-    REGLA: Para todo el codigo generado en las instrucciones siguientes, sigue las siguientes convenciones de los documentos: ${documentationPath}/CleanArchitectureGuide.md y ${documentationPath}/CodeStyleKotlin.md
+    Objetivo: Generar un servicio REST para la capa de datos siguiendo Clean Architecture en Android.
+    Debes hacerme preguntas para obtener la información necesaria para crear la clase correspondiente con nombre FeatureNameApi en la ruta ${androidModuleApp}/FeatureName/data/network/api.
+    Si no existe la carpeta ${androidModuleApp}/FeatureName/data/network/api, debes crearla automáticamente siguiendo la estructura de Clean Architecture.
 
-    Eres un experto desarrollador Android con experiencia en Clean Architecture y Kotlin. Tu tarea es ayudarme a
-    generar un método REST para una aplicación Android siguiendo las mejores prácticas de Clean Architecture y Kotlin.
-
-    Debes hacerme preguntas para obtener la información necesaria para crear la clase correspondiente con nombre FeatureNameApi en la ruta ${androidModuleApp}data/network/api.
-    Si no existe la carpeta ${androidModuleApp}data/network/api, debes crearla automáticamente siguiendo la estructura de Clean Architecture.
+    Sigue estrictamente las convenciones definidas en:
+    ${documentationPath}/CleanArchitectureGuide.md
+    ${documentationPath}/CodeStyling.md
 
     Generame las siguientes preguntas antes de continuar:
 

@@ -1,6 +1,7 @@
-export function generateUseCasePrompt(modulePath: string): string {
+export function generateUseCasePrompt(modulePath: string, documentationPath: string): string {
     return `
-        REGLA: Para todo el código generado en las instrucciones siguientes, sigue las siguientes convenciones de los documentos: ${modulePath}/CleanArchitectureGuide.md y ${modulePath}/CodeStyleKotlin.md
+        Objetivo: Generar un caso de uso para la capa de dominio siguiendo Clean Architecture en Android.
+        La clase debe crearse en la ruta ${modulePath}/FeatureName/domain/usecase/NombreUseCase.kt. Si no existe la carpeta usecase, debes crearla automáticamente siguiendo la estructura de Clean Architecture.
 
         1. El nombre del caso de uso debe ser en formato VerboEntidadUseCase (ej. GetCreditCardUseCase)
 
@@ -10,7 +11,9 @@ export function generateUseCasePrompt(modulePath: string): string {
 
         4. No contiene lógica, solo delega al repository
 
-        ---
+Sigue estrictamente las convenciones definidas en:
+${documentationPath}/CleanArchitectureGuide.md
+${documentationPath}/CodeStyling.md
 
 🧠 REGLAS Y CONVENCIONES PARA EL CÓDIGO:
 

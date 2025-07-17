@@ -40,10 +40,19 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
     if (request.params.name === "generate-feature-clean-architecture") { 
         const modulePath = request.params.arguments?.["module-directory"] ?? "Unknown";
         const documentationPath = request.params.arguments?.["documentation-directory"] ?? "Unknown";
-        let promptRestMethod = generateRestMethod(modulePath, documentationPath);
         let promptModel = generateModelPrompt(modulePath, documentationPath);
+        promptModel = "Paso 1: " + promptModel;
+        promptModel = promptModel.replace(/\s+/g, ' ').trim();
+        let promptRestMethod = generateRestMethod(modulePath, documentationPath);
+        promptRestMethod = "Paso 2: " + promptRestMethod;
+        promptRestMethod = promptRestMethod.replace(/\s+/g, ' ').trim();
         let promptRepository = generateRepositoryPrompt(modulePath, documentationPath);
-        let promptUseCase = generateUseCasePrompt(modulePath);
+        promptRepository = "Paso 3: " + promptRepository;
+        promptRepository = promptRepository.replace(/\s+/g, ' ').trim();
+        let promptUseCase = generateUseCasePrompt(modulePath, documentationPath);
+        promptUseCase = "Paso 4: " + promptUseCase;
+        promptUseCase = promptUseCase.replace(/\s+/g, ' ').trim();
+        let finalText = "Una vez completada la creación de los componentes, mostrar un mensaje de éxito, y mostrar en un listado la lista de los nombres de los componentes creados.";
         return {
             messages: [
                 {
@@ -73,19 +82,25 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
                         type: "text",
                         text: promptUseCase
                     }
+                },
+                {
+                    role: "ios-developer-senior",
+                    content: {
+                        type: "text",
+                        text: finalText
+                    }
                 }
             ]
         };
     }
 
-    if (!ANDROID_PROJECT_PATH) {
-        console.error("ANDROID_PROJECT_PATH environment variable is not set");
-        process.exit(1);
-    }
-
     throw new Error("Prompt implementation not found");
 });
 
+if (!ANDROID_PROJECT_PATH) {
+    console.error("ANDROID_PROJECT_PATH environment variable is not set");
+    process.exit(1);
+}
 
 async function main() {
   const transport = new StdioServerTransport();

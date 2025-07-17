@@ -12,12 +12,14 @@ Cada feature debe seguir la siguiente organización:
 <feature-name>/
 │
 ├── data/
-│   ├── model/            # DTOs o modelos de red
-│   ├── remote/           # Retrofit interfaces y mappers
-│   ├── repository/       # Implementación de repositorios
+│   ├── network/            
+│       ├── model/          # DTOs o modelos de red
+│       ├── api/            # Retrofit interfaces
+│       ├── repository/     # Implementación de repositorios
+│           ├── mapper/     # Implementación mapper
 │
 ├── domain/
-│   ├── model/            # Entidades del dominio
+│   ├── entities/         # Entidades del dominio
 │   ├── repository/       # Interfaces de repositorios
 │   ├── usecase/          # Casos de uso
 │
