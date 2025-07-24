@@ -1,11 +1,11 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { readFileSync } from "fs";
 import { z } from "zod";
-import prompUnitTest from "./prompts/unit_test/generate_kotlin_unit_test.js";
+import prompUnitTest from "./prompts/generate_kotlin_unit_test.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import getDocumentationFile from "./util/filesUtils.js";
-import promptGenerateCommit from "./prompts/unit_test/generate_commit.js";
-import prompPRValidator from "./prompts/unit_test/pr_validator.js";
+import promptGenerateCommit from "./prompts/generate_commit.js";
+import prompPRValidator from "./prompts/pr_validator.js";
 
 const server = new McpServer({
     name: "android-mcp",
