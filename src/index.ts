@@ -2,10 +2,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { readFileSync } from "fs";
 import { z } from "zod";
 import prompUnitTest from "./prompts/unit_test/generate_kotlin_unit_test.js";
-import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import getDocumentationFile from "./util/filesUtils.js";
-import promptInstallApp from "./prompts/build_app.js";
 import promptGenerateCommit from "./prompts/unit_test/generate_commit.js";
+import prompPRValidator from "./prompts/unit_test/pr_validator.js";
 
 const server = new McpServer({
     name: "android-mcp",
@@ -54,12 +54,11 @@ server.registerPrompt(
     })
 );
 
-
 server.registerPrompt(
-    "install-app",
+    "pr-validator",
     {
-        title: "Instalador de aplicaciones Android",
-        description: "Genera un script para instalar una aplicación Android en un emulador.",
+        title: "Validación de Pull Requests",
+        description: "Valida los cambios propuestos en un Pull Request.",
         argsSchema: { }
     },
     ({ }) => ({
@@ -68,7 +67,7 @@ server.registerPrompt(
                 role: "user",
                 content: {
                     type: "text",
-                    text: promptInstallApp()
+                    text: prompPRValidator()
                 }
             }
         ]
@@ -113,6 +112,25 @@ server.registerResource(
     }
 );
 
+server.registerResource(
+    "pr-guidelines",
+    "doc://pr-guidelines",
+    {
+        title: "Guía de Pull Requests",
+        description: "Documento de buenas prácticas y requisitos para Pull Requests.",
+        mimeType: "text/markdown"
+    },
+    async (uri) => {
+        const info = readFileSync(getDocumentationFile("pr-guidelines.md"), "utf-8");
+        return {
+            contents: [{
+                uri: uri.href,
+                text: info
+            }]
+        };
+    }
+);
+
 server.registerTool(
     "get-document",
     {
@@ -127,9 +145,6 @@ server.registerTool(
         if (uri.startsWith("doc://")) {
             const docName = uri.replace("doc://", "");
             fileName = `${docName}.md`;
-        } else if (uri.startsWith("doc://")) {
-            const docName = uri.replace("doc://", "");
-            fileName = `${docName}.md`;
         } else {
             fileName = uri;
         }
@@ -138,82 +153,6 @@ server.registerTool(
             content: [{
                 type: "text",
                 text: fileContent
-            }]
-        };
-    }
-);
-
-
-server.registerTool(
-        "boot-android-emulator",
-    {
-        title: "Bootea un emulador de Android",
-        description: "Lista los emuladores disponibles y bootea uno especificado por nombre.",
-        inputSchema: {
-            avdName: z.string().describe("Nombre del AVD a bootear. Si no se especifica, se lista la AVDs disponibles.")
-        }
-    },
-    async ({ avdName }) => {
-        const { execSync, spawn } = await import("child_process");
-        let output = "";
-        let emulatorPath = "/Users/jperez/Library/Android/sdk/emulator/emulator";
-        if (!avdName || avdName.trim() === "") {
-            try {
-                output = execSync(`${emulatorPath} -list-avds`).toString();
-            } catch (err) {
-                output = "No se pudo listar los AVDs. Verifica la instalación del emulador.";
-            }
-        } else {
-            try {
-                spawn(emulatorPath, ["-avd", avdName, "-no-snapshot-save"], {
-                    detached: true,
-                    stdio: "ignore"
-                }).unref();
-                output = `Emulador ${avdName} lanzado en segundo plano.`;
-            } catch (err) {
-                console.error("Error al bootear el emulador:", err);
-                output = "Error al bootear el emulador. Asegúrate de que el nombre del AVD sea correcto y que el emulador esté instalado.";
-            }
-        }
-        return {
-            content: [{
-                type: "text",
-                text: output
-            }]
-        };
-    }
-);
-
-server.registerTool(
-    "validate-android-env",
-    {
-        title: "Valida configuración de entorno Android",
-        description: "Verifica si 'emulator' y 'adb' están disponibles en el PATH y listos para usarse.",
-        inputSchema: {},
-    },
-    async () => {
-        const { execSync } = await import("child_process");
-        let emulatorOk = false;
-        let adbOk = false;
-        let emulatorPath = "";
-        let adbPath = "";
-        let errors = [];
-        try {
-            emulatorPath = execSync("which emulator").toString().trim();
-            emulatorOk = !!emulatorPath;
-        } catch {
-            errors.push("'emulator' no está en el PATH");
-        }
-        try {
-            adbPath = execSync("which adb").toString().trim();
-            adbOk = !!adbPath;
-        } catch {
-            errors.push("'adb' no está en el PATH");
-        }
-        return {
-            content: [{
-                type: "text",
-                text: `emulator: ${emulatorOk ? 'OK' : 'NO ENCONTRADO'}${emulatorPath ? ' (' + emulatorPath + ')' : ''}\nadb: ${adbOk ? 'OK' : 'NO ENCONTRADO'}${adbPath ? ' (' + adbPath + ')' : ''}\n${errors.length ? '\nErrores:\n' + errors.join('\n') : ''}`
             }]
         };
     }
