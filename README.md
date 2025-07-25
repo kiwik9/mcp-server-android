@@ -2,11 +2,11 @@
 
 Este proyecto es un servidor MCP (Model Context Protocol) para Android, desarrollado en TypeScript/Node.js.
 
-- [1. Configuración Visual Studio Insiders](#configuración-visual-studio-insiders)
-- [2. Instalación](#instalación)
-- [3. Configuracion MCP](#mcp)
-- [4. Uso General](#uso-general)
-- [5. Promp Unit Test](#unit-test)
+- [1. Configuración Visual Studio Insiders](#1-configuración-visual-studio-insiders)
+- [2. Instalación](#2-instalación)
+- [3. Configuracion MCP](#3-configuracion-mcp)
+- [4. Uso General](#4-uso-general)
+- [5. Promp Unit Test](#5-promp-unit-test)
 
 ## 1. Configuración Visual Studio Insiders
 
