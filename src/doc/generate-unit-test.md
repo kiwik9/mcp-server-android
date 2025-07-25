@@ -12,9 +12,8 @@
 - Agrega las mismas importaciones que tiene el archivo del cual requiere el test, no crees ninguna clase adicional o helpers.
 - Los **títulos de las funciones de prueba deben estar en inglés** y deben **expresar claramente** el comportamiento validado.
   Ejemplo: `shouldReturnUser_WhenIdIsValid`
-- No utilices mockkStatic ni unmockkStatic
-- No utilices safeApiCall, isResponseSuccessful, mapFlatDetail.
-- No es necesario usar encrypt
+- IMPORTANTE: No utilices mockkStatic, unmockkStatic, encrypt
+- IMPORTANTE: No uses las funciones safeApiCall, isResponseSuccessful, mapFlatDetail, resultDetail, .
 - Solo has pruebas funcionales y de flujo.
 
 ---
