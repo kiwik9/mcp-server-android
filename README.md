@@ -94,3 +94,8 @@ En la barra izquierda tendras la opcion de agregar e iniciar el mcp por el VSC
 - `build/` - Archivos compilados y documentación generada
 - `package.json` - Dependencias y scripts de npm
 - `tsconfig.json` - Configuración de TypeScript
+
+
+## Demo 
+https://everisgroup-my.sharepoint.com/:v:/g/personal/jpererab_emeal_nttdata_com/EdS5O4afvnRMvwLMxE3tclsBRTJKOEsbno1Ec2ktQD6g6w?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Mffgxe
+
